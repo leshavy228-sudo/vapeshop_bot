@@ -14,19 +14,23 @@ user_router = Router()
 
 users_db = []
 
+
+from database import check_or_add_user #импорт нашей функции
 @user_router.message(CommandStart())
-async def start(message : types.Message):
-    user_id = message.from_user.id
-    if user_id in users_db:
+async def startt(message: types.Message):
+    is_new_user = await check_or_add_user(
+        tg_id= message.from_user.id,
+        username= message.from_user.username,
+        full_name=message.from_user.full_name
+    )
+    if is_new_user:
         await message.answer(
-            f"Привет {message.from_user.first_name}, рады снова видеть тебя",
-            reply_markup=for_cmd_start
+            f"Рады видеть тебя в нашем вейп-шопе💨, {message.from_user.full_name}!\n"
+            f"Лови на свой баланс 100 бонусов💯"
+            f"В нашей системе лояльности 1 бонус = 1 рубль😊"
         )
-
     else:
-        users_db.append(user_id)
-        await message.answer(f"Привет {message.from_user.first_name}👋\nРегистрация в системе лояльности Vape Shop прошла успешно!", reply_markup=for_cmd_start)
-
+        await message.answer(f"С возвращением, {message.from_user.first_name}! Рады тебя снова видеть. 👋")
 
 @user_router.message(F.text == "Поддержка")
 async def supp(message : types.Message):
