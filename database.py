@@ -43,7 +43,7 @@ async def check_or_add_user(tg_id: int,username: str, full_name: str):
 async def get_user_balance(tg_id: int):
     async with aiosqlite.connect("vape_shop.db") as db:
         cursor = await db.execute("SELECT balance FROM users WHERE tg_id = ?",(tg_id,))
-        result = cursor.fetchone()
+        result = await cursor.fetchone()
         if result:
             return result[0]
         return 0
