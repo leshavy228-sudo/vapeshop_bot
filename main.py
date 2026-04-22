@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.session.aiohttp import AiohttpSession
+from utils import create_telegram_aiohttp_session
 
 
 # Импортируем твои будущие роутеры (обработчики)
@@ -17,6 +18,7 @@ from database import init_db
 
 # Загружаем переменные из .env
 load_dotenv()
+PROXY_URL = os.getenv("PROXY_URL")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 async def main():
@@ -29,8 +31,9 @@ async def main():
 
 
 
-    session = AiohttpSession(proxy="http://proxy.server:3128")
-    bot = Bot(token=BOT_TOKEN, session=session)
+    proxy_url = os.getenv("PROXY_URL")
+    session = create_telegram_aiohttp_session(proxy_url)
+    bot = Bot(token=os.getenv("BOT_TOKEN"), session=session)
     dp = Dispatcher(storage=MemoryStorage())
 
     # Регистрируем роутеры
